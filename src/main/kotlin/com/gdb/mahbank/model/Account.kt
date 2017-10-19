@@ -20,4 +20,11 @@ class Account: JsonModel {
             accountNumber = string("accountNumber")
         }
     }
+
+    override fun toJSON(json: JsonBuilder) {
+        with(json) {
+            add("name", name)
+            add("accountNumber", accountNumber)
+        }
+    }
 }
