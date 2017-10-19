@@ -14,11 +14,11 @@ import kotlin.reflect.KClass
 @SpringBootApplication
 open class MahBankApp : App(AccountListView::class, Styles::class) {
 
-    //private var context : ConfigurableApplicationContext
+    private lateinit var context : ConfigurableApplicationContext
 
     override fun init() {
         super.init()
-        val context = SpringApplication.run(this.javaClass)
+        context = SpringApplication.run(this.javaClass)
         context.autowireCapableBeanFactory.autowireBean(this)
         FX.dicontainer = object : DIContainer {
             override fun <T : Any> getInstance(type: KClass<T>): T = context.getBean(type.java)
@@ -28,7 +28,7 @@ open class MahBankApp : App(AccountListView::class, Styles::class) {
 
     override fun stop() {
         super.stop()
-        //context.close()
+        context.close()
     }
 
     companion object {
