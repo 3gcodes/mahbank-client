@@ -1,17 +1,18 @@
 package com.gdb.mahbank.controller
 
 import com.gdb.mahbank.model.Account
-import tornadofx.toModel
+import com.gdb.mahbank.repository.AccountRepository
 
 class AccountController : ControllerBase() {
 
-    fun getAccounts()  = api.get("account").list().toModel<Account>()
+    val accountRepository : AccountRepository by di()
 
-    fun saveAccount(name: String, number: String) : Account {
-        var account = Account()
-        account.name = name
-        account.accountNumber = number
+    fun save(account : Account) : Account {
+        return accountRepository.save(account)
+    }
 
-        return api.post("account", account).one().toModel<Account>()
+    fun findAll() : List<Account> {
+        val accounts = accountRepository.findAll().toList()
+        return accounts
     }
 }

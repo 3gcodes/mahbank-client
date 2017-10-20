@@ -1,17 +1,29 @@
 package com.gdb.mahbank.view
 
 import com.gdb.mahbank.controller.AccountController
+import com.gdb.mahbank.event.AccountAddRequest
 import com.gdb.mahbank.model.Account
-import com.gdb.mahbank.service.SomeService
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.geometry.Orientation
 import tornadofx.*
 
 class AccountListView : View("Hello") {
 
-    val accountController: AccountController by inject()
-    val someService : SomeService by di()
+    private val accountController: AccountController by inject()
+    private var accounts : ObservableList<Account>
+    private val newAccountView : NewAccount by inject()
 
-    private var accounts = accountController.getAccounts()
+    init {
+
+        accounts = FXCollections.observableArrayList(
+                accountController.findAll()
+        )
+
+        subscribe<AccountAddRequest> { event ->
+            accounts.add(event.account)
+        }
+    }
 
     override val root = form {
         fieldset(labelPosition = Orientation.VERTICAL) {
@@ -22,14 +34,7 @@ class AccountListView : View("Hello") {
             }
             button("New Account") {
                 action {
-                    replaceWith(NewAccount::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.LEFT))
-                }
-            }
-            button("Refresh") {
-                action {
-                    runAsyncWithProgress {
-                        accounts.asyncItems { accountController.getAccounts() }
-                    }
+                    newAccountView.openModal()
                 }
             }
         }

@@ -1,30 +1,12 @@
 package com.gdb.mahbank.model
 
-import tornadofx.*
-import javax.json.JsonObject
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
-class Account: JsonModel {
-    var id by property<Long>()
-    fun idProperty() = getProperty(Account::id)
-
-    var name by property<String>()
-    fun nameProperty() = getProperty(Account::name)
-
-    var accountNumber by property<String>()
-    fun accountNumberProperty() = getProperty(Account::accountNumber)
-
-    override fun updateModel(json: JsonObject) {
-        with(json) {
-            id = long("id")
-            name = string("name")
-            accountNumber = string("accountNumber")
-        }
-    }
-
-    override fun toJSON(json: JsonBuilder) {
-        with(json) {
-            add("name", name)
-            add("accountNumber", accountNumber)
-        }
-    }
-}
+@Entity
+data class Account(
+        @Id @GeneratedValue val id : Long = -1,
+        val name : String = "",
+        val accountNumber : String = ""
+)

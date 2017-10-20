@@ -1,6 +1,8 @@
 package com.gdb.mahbank.view
 
 import com.gdb.mahbank.controller.AccountController
+import com.gdb.mahbank.event.AccountAddRequest
+import com.gdb.mahbank.model.Account
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
 import tornadofx.*
@@ -25,16 +27,18 @@ class NewAccount : View("New Account") {
                     isDefaultButton = true
                     action {
                         runAsyncWithProgress {
-                            val newAccount = accountController.saveAccount(name.value, number.value)
+                            val newAccount = accountController.save(Account(-1, name.value, number.value))
+                            fire(AccountAddRequest(newAccount))
                         } ui {
-                            replaceWith(AccountListView::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.RIGHT))
-
+                            name.value = ""
+                            number.value = ""
+                            close()
                         }
                     }
                 }
-                button("Cancel") {
+                button("Close") {
                     action {
-                        replaceWith(AccountListView::class, ViewTransition.Slide(0.3.seconds, ViewTransition.Direction.RIGHT))
+                        close()
                     }
                 }
             }
